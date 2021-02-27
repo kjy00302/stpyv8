@@ -7,7 +7,8 @@ from __future__ import print_function
 import re
 import collections.abc
 
-import _STPyV8
+from . import _STPyV8
+import importlib.resources
 
 __version__ = _STPyV8.JSEngine.version
 
@@ -326,7 +327,8 @@ class JSContext(_STPyV8.JSContext):
         del self
 
 
-v8_default_platform = JSPlatform()
+with importlib.resources.path(__name__, 'icudtl.dat') as icu_path:
+    v8_default_platform = JSPlatform(icu_path=str(icu_path))
 v8_default_platform.init()
 
 v8_default_isolate = JSIsolate()

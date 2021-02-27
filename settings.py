@@ -16,14 +16,6 @@ STPYV8_VERSION = V8_GIT_TAG_STABLE
 
 v8_deps_linux = os.environ.get('V8_DEPS_LINUX', '1') in ('1', )
 
-ICU_DATA_FOLDER_UNIX = "/usr/share/stpyv8"
-ICU_DATA_FOLDER_OSX  = "/Library/Application Support/STPyV8/"
-
-if os.name in ("posix", ):
-    icu_data_folder = ICU_DATA_FOLDER_OSX if sys.platform in ("darwin", ) else ICU_DATA_FOLDER_UNIX
-else:
-    icu_data_folder = None
-
 os.environ['PATH'] = "{}:{}".format(os.environ['PATH'], DEPOT_HOME)
 
 gn_args = {

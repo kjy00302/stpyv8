@@ -115,6 +115,14 @@ def clean_stpyv8():
     if os.path.exists(os.path.join(build_folder)):
         shutil.rmtree(build_folder)
 
+def prepare_stpyv8():
+    package_folder = os.path.join(STPYV8_HOME, 'build/STPyV8')
+    os.makedirs(package_folder)
+    shutil.copy(os.path.join(V8_HOME, "out.gn/x64.release.sample/icudtl.dat"),
+                os.path.join(package_folder, "icudtl.dat"))
+    shutil.copy(os.path.join(STPYV8_HOME, "STPyV8.py"),
+                os.path.join(package_folder, "__init__.py"))
+
 
 def prepare_v8():
     try:
@@ -122,6 +130,7 @@ def prepare_v8():
         checkout_v8()
         build_v8()
         clean_stpyv8()
+        prepare_stpyv8()
     except Exception as e:
         log.error("Fail to checkout and build v8, %s", str(e))
 
@@ -149,22 +158,17 @@ class stpyv8_install_v8(build):
 class stpyv8_build_no_v8(build):
     def run(self):
         clean_stpyv8()
+        prepare_stpyv8()
         build.run(self)
 
 
 class stpyv8_install(install):
     def run(self):
         self.skip_build = True
-
-        if icu_data_folder:
-            os.makedirs(icu_data_folder, exist_ok = True)
-            shutil.copy(os.path.join(V8_HOME, "out.gn/x64.release.sample/icudtl.dat"),
-                        icu_data_folder)
-
         install.run(self)
 
 
-stpyv8 = Extension(name               = "_STPyV8",
+stpyv8 = Extension(name               = "STPyV8._STPyV8",
                    sources            = [os.path.join("src", source) for source in source_files],
                    define_macros      = macros,
                    include_dirs       = include_dirs,
@@ -181,8 +185,10 @@ setup(name         = "stpyv8",
       author       = "Philip Syme, Angelo Dell'Aera",
       url          = "https://github.com/area1/stpyv8",
       license      = "Apache License 2.0",
-      py_modules   = ["STPyV8"],
+      package_dir  = {"STPyV8": "build/STPyV8"},
+      packages     = ["STPyV8"],
       ext_modules  = [stpyv8],
+      package_data = {"STPyV8": ['icudtl.dat']},
       classifiers  = [
         "Development Status :: 4 - Beta",
         "Environment :: Plugins",
