@@ -7,7 +7,8 @@
 void CContext::Expose(void)
 {
     py::class_<CPlatform, boost::noncopyable>("JSPlatform", "JSPlatform allows the V8 platform to be initialized", py::no_init)
-    .def(py::init<std::string>((py::arg("argv") = std::string())))
+    .def(py::init<std::string, std::string>((py::arg("argv") = std::string(),
+                                             py::arg("icu_path") = std::string())))
     .def("init", &CPlatform::Init, "Initializes the platform")
     ;
 
