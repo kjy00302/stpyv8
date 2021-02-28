@@ -8,7 +8,7 @@ import re
 import collections.abc
 
 from . import _STPyV8
-import importlib.resources
+from pkg_resources import resource_filename
 
 __version__ = _STPyV8.JSEngine.version
 
@@ -327,8 +327,8 @@ class JSContext(_STPyV8.JSContext):
         del self
 
 
-with importlib.resources.path(__name__, 'icudtl.dat') as icu_path:
-    v8_default_platform = JSPlatform(icu_path=str(icu_path))
+v8_default_platform = JSPlatform(
+    icu_path=resource_filename(__name__, 'icudtl.dat'))
 v8_default_platform.init()
 
 v8_default_isolate = JSIsolate()
